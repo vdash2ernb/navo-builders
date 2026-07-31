@@ -1106,8 +1106,174 @@
     }
   }
 </style>
+<style id="final-profile-footer-update">
+  /* Larger profile photo and colored social footer */
 
-</head>
+  .identity {
+    grid-template-columns: 160px minmax(0, 1fr) !important;
+    gap: 24px !important;
+    align-items: start !important;
+    padding: 0 32px 30px !important;
+  }
+
+  .portrait {
+    width: 160px !important;
+    height: 160px !important;
+    margin-top: -56px !important;
+    border-width: 6px !important;
+    box-shadow:
+      0 18px 38px rgba(0, 43, 77, 0.22),
+      0 0 0 1px rgba(0, 90, 156, 0.08) !important;
+  }
+
+  .portrait img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: 50% 28% !important;
+  }
+
+  .identity-copy {
+    min-width: 0;
+    padding-top: 24px !important;
+  }
+
+  /* Colored footer */
+  .bottom-socials {
+    position: relative;
+    overflow: hidden;
+    padding: 30px 28px 32px !important;
+    background:
+      radial-gradient(
+        circle at 50% -45%,
+        rgba(0, 116, 189, 0.72),
+        transparent 58%
+      ),
+      linear-gradient(135deg, #002b4d, #004f82) !important;
+    border-top: 0 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+
+  .bottom-socials::before {
+    position: absolute;
+    top: -74px;
+    left: 50%;
+    width: 250px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 50%;
+    content: "";
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .bottom-socials__title {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 18px !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 20, 38, 0.22);
+  }
+
+  .bottom-socials .social-links {
+    position: relative;
+    z-index: 1;
+    gap: 14px !important;
+  }
+
+  .bottom-socials .social-link {
+    width: 48px !important;
+    height: 48px !important;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    box-shadow: 0 10px 24px rgba(0, 16, 31, 0.22) !important;
+    backdrop-filter: blur(5px);
+  }
+
+  .bottom-socials .social-link svg {
+    width: 22px !important;
+    height: 22px !important;
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+  }
+
+  .bottom-socials .social-link:hover {
+    color: #ffffff !important;
+    background: #ef3e42 !important;
+    border-color: #ef3e42;
+    transform: translateY(-3px);
+  }
+
+  @media (max-width: 620px) {
+    .identity {
+      grid-template-columns: 132px minmax(0, 1fr) !important;
+      gap: 18px !important;
+      padding-right: 20px !important;
+      padding-left: 20px !important;
+    }
+
+    .portrait {
+      width: 132px !important;
+      height: 132px !important;
+      margin-top: -46px !important;
+    }
+
+    .identity-copy {
+      padding-top: 19px !important;
+    }
+
+    .bottom-socials {
+      padding: 27px 20px 29px !important;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .identity {
+      grid-template-columns: 106px minmax(0, 1fr) !important;
+      gap: 14px !important;
+    }
+
+    .portrait {
+      width: 106px !important;
+      height: 106px !important;
+      margin-top: -34px !important;
+      border-width: 5px !important;
+    }
+
+    .identity-copy {
+      padding-top: 14px !important;
+    }
+
+    .bottom-socials .social-link {
+      width: 46px !important;
+      height: 46px !important;
+    }
+  }
+</style><style id="social-footer-final-adjustments">
+  /* Final social footer adjustments */
+  .bottom-socials {
+    padding-top: 24px !important;
+    padding-bottom: 26px !important;
+  }
+
+  .bottom-socials .social-links {
+    gap: 14px !important;
+  }
+
+  .bottom-socials .social-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    border-color: rgba(255, 255, 255, 0.42) !important;
+    transform: none !important;
+    box-shadow: 0 10px 24px rgba(0, 16, 31, 0.22) !important;
+  }
+
+  .bottom-socials .social-link:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+  }
+</style></head>
 <body>
 <main class="page-shell">
 <article aria-label="James Navarrette digital business card" class="card">
@@ -1189,12 +1355,16 @@
 </div>
 </div>
 </section>
-<section aria-label="Navo Builders social profiles" class="bottom-socials"><p class="bottom-socials__title">Connect With Navo Builders</p><div aria-label="Navo Builders social profiles" class="social-links"><a aria-label="Open Instagram" class="social-link" href="https://www.instagram.com/navobuilders/" rel="noopener noreferrer" target="_blank" title="Instagram"><svg aria-hidden="true" viewbox="0 0 24 24">
+<section aria-label="Navo Builders social profiles" class="bottom-socials"><div aria-label="Navo Builders social profiles" class="social-links"><a aria-label="Open Facebook" class="social-link" href="https://www.facebook.com/search/top?q=navo%20builders" rel="noopener noreferrer" target="_blank" title="Facebook"><svg aria-hidden="true" viewbox="0 0 24 24">
+<path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v5h4v-5h3l1-4h-4V9c0-.7.3-1 1-1z"></path>
+</svg></a><a aria-label="Open Instagram" class="social-link" href="https://www.instagram.com/navobuilders/" rel="noopener noreferrer" target="_blank" title="Instagram"><svg aria-hidden="true" viewbox="0 0 24 24">
 <rect height="18" rx="5" width="18" x="3" y="3"></rect>
 <circle cx="12" cy="12" r="4"></circle>
 <circle cx="17.5" cy="6.5" r="1"></circle>
-</svg></a><a aria-label="Open Facebook" class="social-link" href="https://www.facebook.com/search/top?q=navo%20builders" rel="noopener noreferrer" target="_blank" title="Facebook"><svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v5h4v-5h3l1-4h-4V9c0-.7.3-1 1-1z"></path>
+</svg></a><a aria-label="Open LinkedIn" class="social-link" href="https://www.linkedin.com/search/results/companies/?keywords=Navo%20Builders" rel="noopener noreferrer" target="_blank" title="LinkedIn"><svg aria-hidden="true" viewbox="0 0 24 24">
+<rect height="11" width="4" x="4" y="9"></rect>
+<path d="M6 4.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"></path>
+<path d="M12 20V9h4v1.8c.9-1.3 2.2-2.2 4.2-2.2 3 0 4.8 2 4.8 5.8V20h-4v-4.9c0-1.9-.7-3-2.3-3-1.7 0-2.7 1.1-2.7 3.4V20z"></path>
 </svg></a><a aria-label="Open Yelp" class="social-link" href="https://www.yelp.com/search?find_desc=Navo+Builders&amp;find_loc=Orange+County%2C+CA" rel="noopener noreferrer" target="_blank" title="Yelp"><svg aria-hidden="true" viewbox="0 0 24 24">
 <path d="M12 3v7"></path>
 <path d="m7.2 6.1 3.1 5.3"></path>
@@ -1202,10 +1372,6 @@
 <path d="m6.2 18 4.7-4"></path>
 <path d="m13.4 14.4 4.4 3.7"></path>
 <path d="m14.2 12.1 5.6-1.2"></path>
-</svg></a><a aria-label="Open Houzz" class="social-link" href="https://www.houzz.com/professionals/query/navo-builders" rel="noopener noreferrer" target="_blank" title="Houzz"><svg aria-hidden="true" viewbox="0 0 24 24">
-<path d="M6 3v8l6-3V3z"></path>
-<path d="M12 8v13h6V5z"></path>
-<path d="M6 11v10h6V8z"></path>
 </svg></a></div></section>
 </article>
 </main>
