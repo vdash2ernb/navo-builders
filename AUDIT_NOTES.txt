@@ -1,0 +1,20 @@
+NAVO BUILDERS UPDATE NOTES
+
+ADDRESS UPDATE
+- Updated the business address everywhere to:
+  1315 S. Iris St.
+  Anaheim, CA 92085
+- Updated homepage structured data, contact section, footer, all article footers, and Privacy Policy.
+- Removed the previous geographic coordinate block because it described the old address and no verified coordinates were provided for the new address.
+
+LEGACY BRAND AUDIT
+- Scanned HTML, CSS, JavaScript, JSON, text files, filenames, URLs, metadata, and schema.
+- Removed remaining legacy-brand text from CSS comments and old documentation.
+- No legacy-brand text or legacy domain references remain in the website code.
+
+DESIGN AND FUNCTIONALITY
+- Kept the Request a Free Quote form on the left.
+- Preserved the existing layout, images, service modals, blog pages, Privacy Policy, gallery, FAQ, mobile navigation, and quote-request SMS workflow.
+
+IMPORTANT IMAGE NOTE
+- The current Navo Builders logo artwork contains a small legacy badge as part of the image pixels. It is not HTML, CSS, JavaScript, metadata, or hidden backend text.
