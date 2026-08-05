@@ -18,3 +18,9 @@ DESIGN AND FUNCTIONALITY
 
 IMPORTANT IMAGE NOTE
 - The current Navo Builders logo artwork contains a small legacy badge as part of the image pixels. It is not HTML, CSS, JavaScript, metadata, or hidden backend text.
+
+
+FAVICON FIX
+- Restored favicon references in index.html, Privacy Policy, and all blog pages.
+- Added favicon.ico, favicon-32x32.png, favicon-64x64.png, favicon.png, and apple-touch-icon.png.
+- Used the existing Navo Builders favicon artwork from the package.

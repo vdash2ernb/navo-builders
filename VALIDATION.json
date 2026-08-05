@@ -13,5 +13,24 @@
   ],
   "legacy_text_hits": [],
   "missing_local_references": [],
-  "quote_form_before_project_copy": true
+  "quote_form_before_project_copy": true,
+  "favicon": {
+    "status": "fixed",
+    "files": [
+      "favicon.ico",
+      "favicon-32x32.png",
+      "favicon-64x64.png",
+      "favicon.png",
+      "apple-touch-icon.png"
+    ],
+    "html_pages_updated": [
+      "index.html",
+      "pages/hardscape-drainage-solutions-anaheim-hills.html",
+      "pages/paver-patio-cost-guide-orange-ca.html",
+      "pages/pavers-vs-stamped-concrete-orange-county.html",
+      "pages/privacy-policy.html",
+      "pages/retaining-wall-permit-orange-county.html",
+      "pages/small-backyard-outdoor-kitchen-ideas.html"
+    ]
+  }
 }
