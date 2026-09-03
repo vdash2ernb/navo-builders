@@ -158,98 +158,10 @@
         });
       });
 
-      const serviceSelect = document.getElementById("service");
-      const projectMessage = document.getElementById("message");
       document.querySelectorAll(".service-quote").forEach((button) => {
         button.addEventListener("click", () => {
-          serviceSelect.value = button.dataset.service;
           document.getElementById("contact").scrollIntoView({ behavior: "smooth", block: "start" });
-          window.setTimeout(() => projectMessage.focus({ preventScroll: true }), 620);
         });
-      });
-
-      const form = document.getElementById("quote-form");
-      const formStatus = document.getElementById("form-status");
-      const quoteSubmit = document.getElementById("quote-submit");
-      const fields = {
-        fullName: document.getElementById("full-name"),
-        phone: document.getElementById("phone"),
-        email: document.getElementById("email"),
-        service: serviceSelect,
-        message: projectMessage
-      };
-
-      const validators = {
-        fullName: (value) => value.trim().length >= 2 ? "" : "Please enter your full name.",
-        phone: (value) => value.replace(/\D/g, "").length >= 10 ? "" : "Please enter a valid phone number.",
-        email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ? "" : "Please enter a valid email address.",
-        service: (value) => value ? "" : "Please select a service.",
-        message: (value) => value.trim().length >= 10 ? "" : "Please include a few details about your project."
-      };
-
-      const showFieldError = (name, error) => {
-        const field = fields[name];
-        const errorNode = document.getElementById(`${field.id}-error`);
-        field.setAttribute("aria-invalid", String(Boolean(error)));
-        if (error) field.setAttribute("aria-describedby", errorNode.id);
-        else field.removeAttribute("aria-describedby");
-        errorNode.textContent = error;
-      };
-
-      Object.entries(fields).forEach(([name, field]) => {
-        field.addEventListener("blur", () => showFieldError(name, validators[name](field.value)));
-        field.addEventListener("input", () => {
-          if (field.getAttribute("aria-invalid") === "true") showFieldError(name, validators[name](field.value));
-        });
-      });
-
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        formStatus.className = "form-status";
-        formStatus.textContent = "";
-
-        let firstInvalid = null;
-        Object.entries(fields).forEach(([name, field]) => {
-          const error = validators[name](field.value);
-          showFieldError(name, error);
-          if (error && !firstInvalid) firstInvalid = field;
-        });
-
-        if (firstInvalid) {
-          formStatus.className = "form-status form-status--error is-visible";
-          formStatus.textContent = "Please review the highlighted fields before sending your request.";
-          firstInvalid.focus();
-          return;
-        }
-
-        quoteSubmit.disabled = true;
-        quoteSubmit.setAttribute("aria-busy", "true");
-
-        const requestText = [
-          "Navo Builders quote request",
-          `Name: ${fields.fullName.value.trim()}`,
-          `Phone: ${fields.phone.value.trim()}`,
-          `Email: ${fields.email.value.trim()}`,
-          `Service: ${fields.service.value}`,
-          `Project details: ${fields.message.value.trim()}`
-        ].join("\n");
-
-        try {
-          await navigator.clipboard?.writeText(requestText);
-        } catch (_) {
-          // Clipboard access is optional; the SMS request still works without it.
-        }
-
-        formStatus.className = "form-status form-status--success is-visible";
-        formStatus.textContent = "Your quote request is ready. Your device will open a pre-filled text to Navo Builders; press Send in your messaging app to complete it.";
-
-        const smsSeparator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? "&" : "?";
-        const smsUrl = `sms:+17144885026${smsSeparator}body=${encodeURIComponent(requestText)}`;
-        window.setTimeout(() => {
-          quoteSubmit.disabled = false;
-          quoteSubmit.removeAttribute("aria-busy");
-          window.location.href = smsUrl;
-        }, 420);
       });
     })();
 
