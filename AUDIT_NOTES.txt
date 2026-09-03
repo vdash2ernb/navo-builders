@@ -3,7 +3,7 @@ NAVO BUILDERS UPDATE NOTES
 ADDRESS UPDATE
 - Updated the business address everywhere to:
   1315 S. Iris St.
-  Anaheim, CA 92085
+  Anaheim, CA 92805
 - Updated homepage structured data, contact section, footer, all article footers, and Privacy Policy.
 - Removed the previous geographic coordinate block because it described the old address and no verified coordinates were provided for the new address.
 
