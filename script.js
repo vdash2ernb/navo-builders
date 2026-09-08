@@ -158,12 +158,78 @@
         });
       });
 
+      const serviceSelect = document.getElementById("service");
+      const projectMessage = document.getElementById("message");
       document.querySelectorAll(".service-quote").forEach((button) => {
         button.addEventListener("click", () => {
+          serviceSelect.value = button.dataset.service;
           document.getElementById("contact").scrollIntoView({ behavior: "smooth", block: "start" });
+          window.setTimeout(() => projectMessage.focus({ preventScroll: true }), 620);
         });
       });
-    })();
+
+      const form = document.getElementById("quote-form");
+      const formStatus = document.getElementById("form-status");
+      const quoteSubmit = document.getElementById("quote-submit");
+      const fields = {
+        fullName: document.getElementById("full-name"),
+        phone: document.getElementById("phone"),
+        email: document.getElementById("email"),
+        service: serviceSelect,
+        message: projectMessage
+      };
+
+      const validators = {
+        fullName: (value) => value.trim().length >= 2 ? "" : "Please enter your full name.",
+        phone: (value) => value.replace(/\D/g, "").length >= 10 ? "" : "Please enter a valid phone number.",
+        email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ? "" : "Please enter a valid email address.",
+        service: (value) => value ? "" : "Please select a service.",
+        message: (value) => value.trim().length >= 10 ? "" : "Please include a few details about your project."
+      };
+
+      const showFieldError = (name, error) => {
+        const field = fields[name];
+        const errorNode = document.getElementById(`${field.id}-error`);
+        field.setAttribute("aria-invalid", String(Boolean(error)));
+        if (error) field.setAttribute("aria-describedby", errorNode.id);
+        else field.removeAttribute("aria-describedby");
+        errorNode.textContent = error;
+      };
+
+      Object.entries(fields).forEach(([name, field]) => {
+        field.addEventListener("blur", () => showFieldError(name, validators[name](field.value)));
+        field.addEventListener("input", () => {
+          if (field.getAttribute("aria-invalid") === "true") showFieldError(name, validators[name](field.value));
+        });
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        formStatus.className = "form-status";
+        formStatus.textContent = "";
+
+        let firstInvalid = null;
+        Object.entries(fields).forEach(([name, field]) => {
+          const error = validators[name](field.value);
+          showFieldError(name, error);
+          if (error && !firstInvalid) firstInvalid = field;
+        });
+
+        if (firstInvalid) {
+          formStatus.className = "form-status form-status--error is-visible";
+          formStatus.textContent = "Please review the highlighted fields before sending your request.";
+          firstInvalid.focus();
+          return;
+        }
+
+        quoteSubmit.disabled = true;
+        quoteSubmit.setAttribute("aria-busy", "true");
+        formStatus.className = "form-status form-status--success is-visible";
+        formStatus.textContent = "Sending your quote request to James...";
+
+        // Submit directly to the configured email-form service.
+        window.setTimeout(() => form.submit(), 150);
+      });})();
 
 /* ---- article and privacy viewer ---- */
 
@@ -481,3 +547,92 @@
     close: closeService
   };
 })();
+
+
+/* Customer reviews carousel */
+document.addEventListener('DOMContentLoaded', function () {
+  const carousel = document.querySelector('.review-carousel');
+  if (!carousel) return;
+  const track = carousel.querySelector('.review-carousel__track');
+  const slides = Array.from(carousel.querySelectorAll('.review-carousel__slide'));
+  const prev = carousel.querySelector('.review-carousel__prev');
+  const next = carousel.querySelector('.review-carousel__next');
+  const dotsWrap = carousel.parentElement.querySelector('.review-carousel__dots');
+  let index = 0;
+
+  function perView() {
+    if (window.innerWidth <= 600) return 1;
+    if (window.innerWidth <= 900) return 2;
+    return 3;
+  }
+
+  function positions() {
+    const visible = perView();
+    const max = Math.max(0, slides.length - visible);
+    const values = [];
+    for (let i = 0; i <= max; i += visible) values.push(i);
+    if (values[values.length - 1] !== max) values.push(max);
+    return values;
+  }
+
+  function renderDots() {
+    if (!dotsWrap) return;
+    dotsWrap.innerHTML = '';
+    const values = positions();
+    const activePage = Math.max(0, values.indexOf(index));
+    values.forEach((position, page) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'review-carousel__dot' + (page === activePage ? ' is-active' : '');
+      dot.setAttribute('aria-label', 'Show review group ' + (page + 1));
+      dot.addEventListener('click', function () {
+        index = position;
+        update();
+      });
+      dotsWrap.appendChild(dot);
+    });
+  }
+
+  function update() {
+    const visible = perView();
+    const values = positions();
+    if (!values.includes(index)) {
+      index = values.reduce((closest, value) =>
+        Math.abs(value - index) < Math.abs(closest - index) ? value : closest, values[0]);
+    }
+    const firstSlide = slides[0];
+    const gap = parseFloat(getComputedStyle(track).gap) || 0;
+    const step = firstSlide ? firstSlide.getBoundingClientRect().width + gap : 0;
+    track.style.transform = step ? 'translateX(-' + (index * step) + 'px)' : 'translateX(0)';
+    if (dotsWrap) {
+      const activePage = values.indexOf(index);
+      Array.from(dotsWrap.children).forEach((dot, i) => dot.classList.toggle('is-active', i === activePage));
+    }
+  }
+
+  prev && prev.addEventListener('click', function () {
+    const values = positions();
+    const current = values.indexOf(index);
+    index = values[current <= 0 ? values.length - 1 : current - 1];
+    update();
+  });
+
+  next && next.addEventListener('click', function () {
+    const values = positions();
+    const current = values.indexOf(index);
+    index = values[current >= values.length - 1 ? 0 : current + 1];
+    update();
+  });
+
+  let resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      renderDots();
+      update();
+    }, 100);
+  });
+
+  renderDots();
+  update();
+});

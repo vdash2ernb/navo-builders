@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{const f=document.getElementById("standalone-contact-form");if(!f)return;f.addEventListener("submit",e=>{e.preventDefault();if(!f.reportValidity())return;const b=f.querySelector('button[type="submit"]');if(b){b.disabled=true;b.setAttribute("aria-busy","true");}window.setTimeout(()=>f.submit(),150);});});
