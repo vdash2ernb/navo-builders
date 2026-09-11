@@ -4644,7 +4644,7 @@
   color: var(--white);
   background:
     linear-gradient(110deg, rgba(0,31,55,.96), rgba(0,75,125,.92)),
-    url("../assets/images/navo-93756ce45130adb3.jpg") center/cover no-repeat;
+    url("../assets/images/navo-93756ce45130adb3.webp") center/cover no-repeat;
 }
 .page-hero .eyebrow { color: var(--brand-red); }
 .page-hero h1 { max-width: 820px; margin: 0; font-size: clamp(2.6rem, 5vw, 4.5rem); line-height: .98; }
@@ -4714,3 +4714,68 @@
 }
 .contact-highlight strong {display:block;color:#fff;margin-bottom:12px;font-size:1rem;}
 .contact-highlight ul {margin:0;padding-left:18px;color:var(--text-on-dark);line-height:1.8;font-size:.9rem;}
+
+
+/* 2026-09 carousel and footer social fixes */
+.review-carousel__viewport{overflow:hidden;scroll-behavior:smooth}
+.review-carousel__track{transform:none!important;transition:none!important}
+.footer-socials{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
+.footer-social-link{display:grid;width:38px;height:38px;place-items:center;border:1px solid rgba(255,255,255,.22);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.footer-social-link:hover{transform:translateY(-2px);background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4)}
+.footer-social-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.footer-social-link:first-child svg{fill:currentColor;stroke:none}
+.external-resources{margin:34px 0;padding:24px 26px;border:1px solid #dbe5ee;border-radius:18px;background:#f7fafc}
+.external-resources h2{margin-top:0!important}
+.external-resources ul{padding-left:20px}
+.external-resources li{margin:10px 0}
+.external-resources a{font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.error-page{min-height:70vh;display:grid;place-items:center;padding:64px 20px;text-align:center}
+.error-card{max-width:680px;padding:44px 34px;border:1px solid #dbe5ee;border-radius:24px;background:#fff;box-shadow:0 18px 50px rgba(0,43,77,.12)}
+.error-code{font-size:clamp(4rem,14vw,8rem);font-weight:900;line-height:.9;color:#002b4d}
+
+
+/* Service area showcase */
+.service-area-showcase{background:linear-gradient(180deg,#fff 0%,#f4f8fb 100%);overflow:hidden}
+.service-area-showcase__heading{max-width:850px;margin-left:auto;margin-right:auto}
+.service-area-showcase__card{max-width:1100px;margin:2rem auto 0;background:#062f50;border-radius:24px;overflow:hidden;box-shadow:0 22px 55px rgba(5,36,61,.16)}
+.service-area-showcase__card>img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:#07385d}
+.service-area-showcase__content{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:28px 32px;color:#fff}
+.service-area-showcase__content>div{max-width:720px}
+.service-area-showcase__label{display:inline-block;margin-bottom:10px;padding:6px 13px;border-radius:999px;background:#f23b43;color:#fff;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em}
+.service-area-showcase__content h3{margin:0 0 8px;color:#fff;font-size:clamp(1.45rem,2.5vw,2.15rem)}
+.service-area-showcase__content p{margin:0;color:rgba(255,255,255,.86);line-height:1.7}
+@media (max-width:760px){.service-area-showcase__card{border-radius:18px}.service-area-showcase__content{display:block;padding:22px}.service-area-showcase__content .btn{margin-top:18px;width:100%;text-align:center}}
+
+/* Review section horizontal scrolling - all 14 reviews accessible */
+.review-carousel{
+ display:block;
+ max-width:1180px;
+ margin:38px auto 0;
+}
+.review-carousel__viewport{
+ overflow-x:auto;
+ overflow-y:hidden;
+ scroll-behavior:smooth;
+ scrollbar-width:thin;
+ -webkit-overflow-scrolling:touch;
+ cursor:grab;
+ padding:8px 0 18px;
+}
+.review-carousel__viewport:active{cursor:grabbing}
+.review-carousel__track{
+ display:flex;
+ gap:24px;
+ transition:none!important;
+ transform:none!important;
+ width:max-content;
+}
+.review-carousel__slide{
+ flex:0 0 360px!important;
+}
+.review-carousel__nav,
+.review-carousel__dots{
+ display:none!important;
+}
+@media(max-width:600px){
+ .review-carousel__slide{flex:0 0 88%!important;}
+}

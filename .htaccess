@@ -1,0 +1,4 @@
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+RewriteEngine On
+RewriteRule ^blog/([^/]+)/?$ /pages/$1.html [R=301,L]

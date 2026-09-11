@@ -1,0 +1,2 @@
+/blog/* /pages/:splat.html 301
+/* /404.html 404
