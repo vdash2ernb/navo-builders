@@ -4698,6 +4698,12 @@
 .policy-layout p, .policy-layout li { color:var(--slate-600); line-height:1.75; }
 .policy-layout ul { padding-left:22px; }
 .policy-meta { color:var(--slate-500); font-size:.82rem; }
+.policy-layout h3 { margin:24px 0 8px; color:var(--brand-blue-700); font-size:1.02rem; }
+.policy-toc-title { margin:18px 0 6px; color:var(--brand-blue-900); font-size:.86rem; }
+.policy-toc { margin:0; padding-left:22px; }
+.policy-toc li { margin-bottom:4px; font-size:.86rem; }
+.policy-toc a, .policy-inline-link { color:var(--brand-blue-700); text-decoration:underline; }
+.policy-toc a:hover, .policy-inline-link:hover { color:var(--brand-red); }
 @media (max-width: 850px) {
   .contact-page-grid { grid-template-columns:1fr; }
   .contact-form-grid { grid-template-columns:1fr; }
