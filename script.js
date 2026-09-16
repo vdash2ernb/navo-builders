@@ -508,6 +508,9 @@
   const nextBtn = root.querySelector(".review-carousel__nav--next");
   const dotsWrap = root.querySelector(".review-carousel__dots");
   const pauseBtn = root.querySelector(".review-carousel__pause");
+  const counter = root.querySelector(".review-carousel__counter");
+  const counterNow = root.querySelector(".review-carousel__counter-current");
+  const counterTotal = root.querySelector(".review-carousel__counter-total");
   const section = root.closest("section");
 
   const AUTOPLAY_MS = 5000;
@@ -576,7 +579,15 @@
     return per ? Math.max(0, Math.min(pageCount - 1, Math.round(viewport.scrollLeft / per))) : 0;
   }
 
+  function syncCounter() {
+    if (!counterNow) return;
+    const card = Math.max(1, Math.min(slides.length, currentIndex() + 1));
+    const text = String(card);
+    if (counterNow.textContent !== text) counterNow.textContent = text;
+  }
+
   function syncDots() {
+    syncCounter();
     if (!dotsWrap) return;
     const active = currentPage();
     Array.prototype.forEach.call(dotsWrap.children, function (dot, i) {
@@ -628,6 +639,7 @@
     if (timer) { window.clearInterval(timer); timer = null; }
     if (running) timer = window.setInterval(goNext, AUTOPLAY_MS);
     track.setAttribute("aria-live", running ? "off" : "polite");
+    if (counter) counter.setAttribute("aria-live", running ? "off" : "polite");
     syncPauseButton();
   }
 
@@ -739,6 +751,7 @@
     }, 150);
   }, { passive: true });
 
+  if (counterTotal) counterTotal.textContent = String(slides.length);
   buildDots();
   syncQuotes();
   sync();

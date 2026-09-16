@@ -4607,6 +4607,7 @@
 .review-carousel__dot:hover{background:rgba(255,255,255,.7)}
 .review-carousel__dot.is-active{background:#fff;transform:scale(1.15)}
 
+.review-carousel__counter{display:none;margin:0;color:#fff;font-size:.82rem;font-weight:800;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 .review-carousel__pause{
  width:30px;height:30px;padding:0;border:0;border-radius:50%;cursor:pointer;
  display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.16);
@@ -4639,8 +4640,12 @@
  .review-carousel{gap:12px}
  .review-carousel__viewport{order:1;flex:0 0 100%}
  .review-carousel__slide{flex:0 0 85%}
- .review-carousel__nav{flex:0 0 40px;width:40px;height:40px}
- .review-carousel__nav svg{width:19px;height:19px}
+ .review-carousel__nav{flex:0 0 44px;width:44px;height:44px}
+ .review-carousel__nav svg{width:20px;height:20px}
+ .review-carousel__dots{display:none}
+ .review-carousel__counter{display:block}
+ .review-carousel__pause{width:44px;height:44px}
+ .review-carousel__pause svg{width:17px;height:17px}
  .review-carousel__nav--prev{order:2}
  .review-carousel__controls{order:3;flex:1 1 auto;margin-top:0}
  .review-carousel__nav--next{order:4}
