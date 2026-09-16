@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://navobuilders.net/sitemap.xml
