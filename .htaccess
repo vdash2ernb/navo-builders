@@ -1,4 +1,10 @@
 DirectoryIndex index.html
 ErrorDocument 404 /404.html
 RewriteEngine On
-RewriteRule ^blog/([^/]+)/?$ /pages/$1.html [R=301,L]
+RewriteRule ^pages/complete-backyard-transformation-orange-county\.html$ /blog/complete-backyard-transformation-orange-county/ [R=301,L]
+RewriteRule ^pages/complete-outdoor-living-remodel-orange-county\.html$ /blog/complete-outdoor-living-remodel-orange-county/ [R=301,L]
+RewriteRule ^pages/hardscape-drainage-solutions-anaheim-hills\.html$ /blog/hardscape-drainage-solutions-anaheim-hills/ [R=301,L]
+RewriteRule ^pages/paver-patio-cost-guide-orange-ca\.html$ /blog/paver-patio-cost-guide-orange-ca/ [R=301,L]
+RewriteRule ^pages/pavers-vs-stamped-concrete-orange-county\.html$ /blog/pavers-vs-stamped-concrete-orange-county/ [R=301,L]
+RewriteRule ^pages/retaining-wall-permit-orange-county\.html$ /blog/retaining-wall-permit-orange-county/ [R=301,L]
+RewriteRule ^pages/small-backyard-outdoor-kitchen-ideas\.html$ /blog/small-backyard-outdoor-kitchen-ideas/ [R=301,L]

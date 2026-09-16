@@ -105,6 +105,7 @@
 
       const lightbox = document.getElementById("lightbox");
       if (lightbox) {
+        const BLANK_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
         const lightboxDialog = lightbox.querySelector(".lightbox-dialog");
         const lightboxClose = lightbox.querySelector(".lightbox-close");
         const lightboxImage = document.getElementById("lightbox-image");
@@ -116,7 +117,7 @@
           lightbox.classList.remove("is-open");
           lightbox.setAttribute("aria-hidden", "true");
           body.classList.remove("lightbox-open");
-          lightboxImage.src = "";
+          lightboxImage.src = BLANK_PIXEL;
           lastFocusedGalleryItem?.focus();
         };
 
@@ -175,7 +176,7 @@
 
 (function () {
   "use strict";
-  const files = {"pavers-vs-stamped-concrete-orange-county":"pavers-vs-stamped-concrete-orange-county.html","retaining-wall-permit-orange-county":"retaining-wall-permit-orange-county.html","paver-patio-cost-guide-orange-ca":"paver-patio-cost-guide-orange-ca.html","small-backyard-outdoor-kitchen-ideas":"small-backyard-outdoor-kitchen-ideas.html","hardscape-drainage-solutions-anaheim-hills":"hardscape-drainage-solutions-anaheim-hills.html","privacy-policy":"privacy-policy.html","terms-of-use":"terms-of-use.html"};
+  const files = {"privacy-policy":"privacy-policy.html","terms-of-use":"terms-of-use.html"};
   const viewer = document.getElementById("navo-inline-viewer");
   const frame = document.getElementById("navo-inline-viewer-frame");
   const closeButton = document.getElementById("navo-inline-viewer-close");
