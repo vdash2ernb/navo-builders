@@ -491,4 +491,255 @@
 
 
 
-/* Review carousel arrows removed. Visitors use horizontal scroll to view all reviews. */
+/* ---- customer reviews carousel ---- */
+
+(function () {
+  "use strict";
+
+  const root = document.querySelector(".review-carousel");
+  if (!root) return;
+
+  const viewport = root.querySelector(".review-carousel__viewport");
+  const track = root.querySelector(".review-carousel__track");
+  const slides = track ? Array.prototype.slice.call(track.querySelectorAll(".review-carousel__slide")) : [];
+  if (!viewport || !track || !slides.length) return;
+
+  const prevBtn = root.querySelector(".review-carousel__nav--prev");
+  const nextBtn = root.querySelector(".review-carousel__nav--next");
+  const dotsWrap = root.querySelector(".review-carousel__dots");
+  const pauseBtn = root.querySelector(".review-carousel__pause");
+  const section = root.closest("section");
+
+  const AUTOPLAY_MS = 5000;
+  const RESUME_MS = 5000;
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  let timer = null;
+  let resumeTimer = null;
+  let programmaticUntil = 0;
+  let pageCount = 1;
+  let visible = 1;
+
+  const blockers = { hover: false, focus: false, interact: false, hidden: false, offscreen: false };
+  let userPaused = motionQuery.matches;
+
+  /* ---- geometry ---- */
+
+  function gapPx() {
+    const cs = getComputedStyle(track);
+    return parseFloat(cs.columnGap || cs.gap) || 0;
+  }
+
+  function stepPx() {
+    return slides[0].getBoundingClientRect().width + gapPx();
+  }
+
+  function maxScroll() {
+    return Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+  }
+
+  function visibleCount() {
+    const step = stepPx();
+    if (!step) return 1;
+    return Math.max(1, Math.min(slides.length, Math.round((viewport.clientWidth + gapPx()) / step)));
+  }
+
+  function scrollToLeft(left) {
+    programmaticUntil = Date.now() + 900;
+    viewport.scrollTo({ left: Math.max(0, Math.min(left, maxScroll())) });
+  }
+
+  function currentIndex() {
+    const step = stepPx();
+    return step ? Math.round(viewport.scrollLeft / step) : 0;
+  }
+
+  function atStart() { return viewport.scrollLeft <= 2; }
+
+  function atEnd() { return viewport.scrollLeft >= maxScroll() - 2; }
+
+  function goNext() {
+    if (atEnd()) scrollToLeft(0);
+    else scrollToLeft((currentIndex() + 1) * stepPx());
+  }
+
+  function goPrev() {
+    if (atStart()) scrollToLeft(maxScroll());
+    else scrollToLeft((currentIndex() - 1) * stepPx());
+  }
+
+  /* ---- dots ---- */
+
+  function currentPage() {
+    if (atEnd()) return pageCount - 1;
+    const per = stepPx() * visible;
+    return per ? Math.max(0, Math.min(pageCount - 1, Math.round(viewport.scrollLeft / per))) : 0;
+  }
+
+  function syncDots() {
+    if (!dotsWrap) return;
+    const active = currentPage();
+    Array.prototype.forEach.call(dotsWrap.children, function (dot, i) {
+      const on = i === active;
+      dot.classList.toggle("is-active", on);
+      if (on) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  }
+
+  function makeDotHandler(page) {
+    return function () { scrollToLeft(page * visible * stepPx()); };
+  }
+
+  function buildDots() {
+    if (!dotsWrap) return;
+    visible = visibleCount();
+    const next = Math.max(1, Math.ceil(slides.length / visible));
+    if (next !== pageCount || dotsWrap.children.length !== next) {
+      pageCount = next;
+      dotsWrap.textContent = "";
+      for (let i = 0; i < pageCount; i += 1) {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "review-carousel__dot";
+        dot.setAttribute("aria-label", "Go to reviews page " + (i + 1));
+        dot.addEventListener("click", makeDotHandler(i));
+        dotsWrap.appendChild(dot);
+      }
+    }
+    syncDots();
+  }
+
+  /* ---- autoplay ---- */
+
+  function isPaused() {
+    return userPaused || blockers.hover || blockers.focus || blockers.interact ||
+      blockers.hidden || blockers.offscreen;
+  }
+
+  function syncPauseButton() {
+    if (!pauseBtn) return;
+    pauseBtn.setAttribute("aria-pressed", String(userPaused));
+    pauseBtn.setAttribute("aria-label", userPaused ? "Play review autoplay" : "Pause review autoplay");
+  }
+
+  function sync() {
+    const running = !isPaused();
+    if (timer) { window.clearInterval(timer); timer = null; }
+    if (running) timer = window.setInterval(goNext, AUTOPLAY_MS);
+    track.setAttribute("aria-live", running ? "off" : "polite");
+    syncPauseButton();
+  }
+
+  function block(name, on) {
+    if (blockers[name] === on) return;
+    blockers[name] = on;
+    sync();
+  }
+
+  function interacted() {
+    block("interact", true);
+    if (resumeTimer) window.clearTimeout(resumeTimer);
+    resumeTimer = window.setTimeout(function () { block("interact", false); }, RESUME_MS);
+  }
+
+  /* ---- long reviews ---- */
+
+  function updateFade(quote) {
+    quote.classList.toggle("is-at-bottom", quote.scrollTop + quote.clientHeight >= quote.scrollHeight - 2);
+  }
+
+  function syncQuotes() {
+    slides.forEach(function (slide) {
+      const quote = slide.querySelector("blockquote");
+      if (!quote) return;
+      if (quote.scrollHeight > quote.clientHeight + 1) {
+        const cite = slide.querySelector("cite");
+        const name = cite && cite.firstChild ? cite.firstChild.textContent.trim() : "this customer";
+        quote.setAttribute("tabindex", "0");
+        quote.setAttribute("aria-label", "Review from " + name + ", scrollable");
+        quote.classList.add("has-overflow");
+        updateFade(quote);
+      } else {
+        quote.removeAttribute("tabindex");
+        quote.removeAttribute("aria-label");
+        quote.classList.remove("has-overflow", "is-at-bottom");
+      }
+    });
+  }
+
+  slides.forEach(function (slide) {
+    const quote = slide.querySelector("blockquote");
+    if (!quote) return;
+    quote.addEventListener("scroll", function () {
+      updateFade(quote);
+      interacted();
+    }, { passive: true });
+  });
+
+  /* ---- wiring ---- */
+
+  if (prevBtn) prevBtn.addEventListener("click", function () { goPrev(); interacted(); });
+  if (nextBtn) nextBtn.addEventListener("click", function () { goNext(); interacted(); });
+
+  if (pauseBtn) {
+    pauseBtn.addEventListener("click", function () {
+      userPaused = !userPaused;
+      sync();
+    });
+  }
+
+  viewport.addEventListener("scroll", function () {
+    syncDots();
+    if (Date.now() > programmaticUntil) interacted();
+  }, { passive: true });
+
+  viewport.addEventListener("touchstart", interacted, { passive: true });
+
+  viewport.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goNext();
+      interacted();
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goPrev();
+      interacted();
+    }
+  });
+
+  root.addEventListener("mouseenter", function () { block("hover", true); });
+  root.addEventListener("mouseleave", function () { block("hover", false); });
+  root.addEventListener("focusin", function () { block("focus", true); });
+  root.addEventListener("focusout", function (event) {
+    if (!root.contains(event.relatedTarget)) block("focus", false);
+  });
+
+  document.addEventListener("visibilitychange", function () { block("hidden", document.hidden); });
+
+  if (section && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { block("offscreen", !entry.isIntersecting); });
+    }, { threshold: 0.2 }).observe(section);
+  }
+
+  function onMotionChange() {
+    userPaused = motionQuery.matches;
+    sync();
+  }
+  if (typeof motionQuery.addEventListener === "function") motionQuery.addEventListener("change", onMotionChange);
+  else if (typeof motionQuery.addListener === "function") motionQuery.addListener(onMotionChange);
+
+  let resizeTimer = null;
+  window.addEventListener("resize", function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(function () {
+      buildDots();
+      syncQuotes();
+    }, 150);
+  }, { passive: true });
+
+  buildDots();
+  syncQuotes();
+  sync();
+})();
