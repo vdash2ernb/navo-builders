@@ -4743,14 +4743,16 @@
 /* Service area showcase */
 .service-area-showcase{background:linear-gradient(180deg,#fff 0%,#f4f8fb 100%);overflow:hidden}
 .service-area-showcase__heading{max-width:850px;margin-left:auto;margin-right:auto}
-.service-area-showcase__card{max-width:1100px;margin:2rem auto 0;background:#062f50;border-radius:24px;overflow:hidden;box-shadow:0 22px 55px rgba(5,36,61,.16)}
+.service-area-showcase__stack{max-width:1100px;margin:2rem auto 0;display:grid;gap:30px}
+.service-area-showcase__card{background:#062f50;border-radius:24px;overflow:hidden;box-shadow:0 22px 55px rgba(5,36,61,.16)}
 .service-area-showcase__card>img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:#07385d}
-.service-area-showcase__content{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:28px 32px;color:#fff}
-.service-area-showcase__content>div{max-width:720px}
-.service-area-showcase__label{display:inline-block;margin-bottom:10px;padding:6px 13px;border-radius:999px;background:#f23b43;color:#fff;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em}
+.service-area-showcase__content{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:48px 50px;color:#fff}
+.service-area-showcase__content>div{max-width:850px}
+.service-area-showcase__content .btn{flex-shrink:0}
 .service-area-showcase__content h3{margin:0 0 8px;color:#fff;font-size:clamp(1.45rem,2.5vw,2.15rem)}
 .service-area-showcase__content p{margin:0;color:rgba(255,255,255,.86);line-height:1.7}
-@media (max-width:760px){.service-area-showcase__card{border-radius:18px}.service-area-showcase__content{display:block;padding:22px}.service-area-showcase__content .btn{margin-top:18px;width:100%;text-align:center}}
+@media (max-width:1024px){.service-area-showcase__content{display:block;padding:38px 34px;text-align:left}.service-area-showcase__content>div{max-width:none}.service-area-showcase__content .btn{margin-top:22px}}
+@media (max-width:760px){.service-area-showcase__card{border-radius:18px}.service-area-showcase__content{padding:30px 24px}.service-area-showcase__content .btn{margin-top:18px;width:100%;text-align:center}}
 
 /* Review section horizontal scrolling - all 14 reviews accessible */
 .review-carousel{
