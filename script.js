@@ -50,7 +50,7 @@
       const handleScroll = () => {
         const y = window.scrollY;
         header.classList.toggle("is-scrolled", y > 18);
-        backToTop.classList.toggle("is-visible", y > 620);
+        if (backToTop) backToTop.classList.toggle("is-visible", y > 620);
       };
 
       window.addEventListener("scroll", () => {
@@ -60,7 +60,7 @@
       window.addEventListener("resize", syncMobileMenuTop, { passive: true });
       handleScroll();
 
-      backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      if (backToTop) backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
       const observedSections = [...document.querySelectorAll("main section[id]")].filter((section) =>
         ["home", "services", "gallery", "why-us", "contact"].includes(section.id)
@@ -104,44 +104,46 @@
       });
 
       const lightbox = document.getElementById("lightbox");
-      const lightboxDialog = lightbox.querySelector(".lightbox-dialog");
-      const lightboxClose = lightbox.querySelector(".lightbox-close");
-      const lightboxImage = document.getElementById("lightbox-image");
-      const lightboxTitle = document.getElementById("lightbox-title");
-      const lightboxLabel = document.getElementById("lightbox-label");
-      let lastFocusedGalleryItem = null;
+      if (lightbox) {
+        const lightboxDialog = lightbox.querySelector(".lightbox-dialog");
+        const lightboxClose = lightbox.querySelector(".lightbox-close");
+        const lightboxImage = document.getElementById("lightbox-image");
+        const lightboxTitle = document.getElementById("lightbox-title");
+        const lightboxLabel = document.getElementById("lightbox-label");
+        let lastFocusedGalleryItem = null;
 
-      const closeLightbox = () => {
-        lightbox.classList.remove("is-open");
-        lightbox.setAttribute("aria-hidden", "true");
-        body.classList.remove("lightbox-open");
-        lightboxImage.src = "";
-        lastFocusedGalleryItem?.focus();
-      };
+        const closeLightbox = () => {
+          lightbox.classList.remove("is-open");
+          lightbox.setAttribute("aria-hidden", "true");
+          body.classList.remove("lightbox-open");
+          lightboxImage.src = "";
+          lastFocusedGalleryItem?.focus();
+        };
 
-      galleryItems.forEach((item) => {
-        item.addEventListener("click", () => {
-          const image = item.querySelector("img");
-          lastFocusedGalleryItem = item;
-          lightboxImage.src = image.currentSrc || image.src;
-          lightboxImage.alt = image.alt;
-          lightboxTitle.textContent = item.dataset.title;
-          lightboxLabel.textContent = item.dataset.label;
-          lightbox.classList.add("is-open");
-          lightbox.setAttribute("aria-hidden", "false");
-          body.classList.add("lightbox-open");
-          window.setTimeout(() => lightboxClose.focus(), 120);
+        galleryItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            const image = item.querySelector("img");
+            lastFocusedGalleryItem = item;
+            lightboxImage.src = image.currentSrc || image.src;
+            lightboxImage.alt = image.alt;
+            lightboxTitle.textContent = item.dataset.title;
+            lightboxLabel.textContent = item.dataset.label;
+            lightbox.classList.add("is-open");
+            lightbox.setAttribute("aria-hidden", "false");
+            body.classList.add("lightbox-open");
+            window.setTimeout(() => lightboxClose.focus(), 120);
+          });
         });
-      });
 
-      lightboxClose.addEventListener("click", closeLightbox);
-      lightbox.addEventListener("click", (event) => {
-        if (!lightboxDialog.contains(event.target)) closeLightbox();
-      });
+        lightboxClose.addEventListener("click", closeLightbox);
+        lightbox.addEventListener("click", (event) => {
+          if (!lightboxDialog.contains(event.target)) closeLightbox();
+        });
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && lightbox.classList.contains("is-open")) closeLightbox();
-      });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && lightbox.classList.contains("is-open")) closeLightbox();
+        });
+      }
 
       document.querySelectorAll(".faq-question").forEach((question) => {
         question.addEventListener("click", () => {
@@ -167,69 +169,7 @@
           window.setTimeout(() => projectMessage.focus({ preventScroll: true }), 620);
         });
       });
-
-      const form = document.getElementById("quote-form");
-      const formStatus = document.getElementById("form-status");
-      const quoteSubmit = document.getElementById("quote-submit");
-      const fields = {
-        fullName: document.getElementById("full-name"),
-        phone: document.getElementById("phone"),
-        email: document.getElementById("email"),
-        service: serviceSelect,
-        message: projectMessage
-      };
-
-      const validators = {
-        fullName: (value) => value.trim().length >= 2 ? "" : "Please enter your full name.",
-        phone: (value) => value.replace(/\D/g, "").length >= 10 ? "" : "Please enter a valid phone number.",
-        email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ? "" : "Please enter a valid email address.",
-        service: (value) => value ? "" : "Please select a service.",
-        message: (value) => value.trim().length >= 10 ? "" : "Please include a few details about your project."
-      };
-
-      const showFieldError = (name, error) => {
-        const field = fields[name];
-        const errorNode = document.getElementById(`${field.id}-error`);
-        field.setAttribute("aria-invalid", String(Boolean(error)));
-        if (error) field.setAttribute("aria-describedby", errorNode.id);
-        else field.removeAttribute("aria-describedby");
-        errorNode.textContent = error;
-      };
-
-      Object.entries(fields).forEach(([name, field]) => {
-        field.addEventListener("blur", () => showFieldError(name, validators[name](field.value)));
-        field.addEventListener("input", () => {
-          if (field.getAttribute("aria-invalid") === "true") showFieldError(name, validators[name](field.value));
-        });
-      });
-
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        formStatus.className = "form-status";
-        formStatus.textContent = "";
-
-        let firstInvalid = null;
-        Object.entries(fields).forEach(([name, field]) => {
-          const error = validators[name](field.value);
-          showFieldError(name, error);
-          if (error && !firstInvalid) firstInvalid = field;
-        });
-
-        if (firstInvalid) {
-          formStatus.className = "form-status form-status--error is-visible";
-          formStatus.textContent = "Please review the highlighted fields before sending your request.";
-          firstInvalid.focus();
-          return;
-        }
-
-        quoteSubmit.disabled = true;
-        quoteSubmit.setAttribute("aria-busy", "true");
-        formStatus.className = "form-status form-status--success is-visible";
-        formStatus.textContent = "Sending your quote request to James...";
-
-        // Submit directly to the configured email-form service.
-        window.setTimeout(() => form.submit(), 150);
-      });})();
+    })();
 
 /* ---- article and privacy viewer ---- */
 
