@@ -6,19 +6,22 @@
       const menuToggle = document.querySelector(".menu-toggle");
       const mobileMenu = document.getElementById("mobile-menu");
       const mobilePanel = mobileMenu.querySelector(".mobile-menu-panel");
-      const mobileLinks = mobileMenu.querySelectorAll("a[href^='#']");
-      const navLinks = document.querySelectorAll(".nav-link");
       const backToTop = document.getElementById("back-to-top");
       const currentYear = document.getElementById("current-year");
 
       currentYear.textContent = new Date().getFullYear();
+
+      // Must match the CSS breakpoint where .desktop-nav appears and .menu-toggle is hidden.
+      const DESKTOP_QUERY = window.matchMedia("(min-width: 1121px)");
 
       const syncMobileMenuTop = () => {
         const headerBottom = Math.max(0, Math.round(header.getBoundingClientRect().bottom));
         mobileMenu.style.setProperty("--mobile-menu-top", `${headerBottom}px`);
       };
 
-      const setMenuState = (open) => {
+      const isMenuOpen = () => menuToggle.getAttribute("aria-expanded") === "true";
+
+      const setMenuState = (open, { returnFocus = false } = {}) => {
         if (open) syncMobileMenuTop();
         menuToggle.setAttribute("aria-expanded", String(open));
         menuToggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
@@ -26,66 +29,248 @@
         mobileMenu.classList.toggle("is-open", open);
         body.classList.toggle("menu-open", open);
         if (open) {
-          window.setTimeout(() => mobileMenu.querySelector(".mobile-menu-link")?.focus(), 220);
+          window.setTimeout(() => {
+            if (isMenuOpen()) mobileMenu.querySelector(".mobile-menu-link")?.focus();
+          }, 220);
+        } else if (returnFocus) {
+          menuToggle.focus();
         }
       };
 
       menuToggle.addEventListener("click", () => {
-        setMenuState(menuToggle.getAttribute("aria-expanded") !== "true");
+        setMenuState(!isMenuOpen());
       });
 
+      // Tapping the dimmed overlay outside the panel closes the menu and hands focus back to the toggle.
       mobileMenu.addEventListener("click", (event) => {
-        if (!mobilePanel.contains(event.target)) setMenuState(false);
+        if (!mobilePanel.contains(event.target)) setMenuState(false, { returnFocus: true });
       });
 
-      mobileLinks.forEach((link) => link.addEventListener("click", () => setMenuState(false)));
+      mobileMenu.querySelectorAll("a[href]").forEach((link) => {
+        link.addEventListener("click", () => setMenuState(false));
+      });
 
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") {
-          setMenuState(false);
-          menuToggle.focus();
+        if (!isMenuOpen()) return;
+
+        if (event.key === "Escape") {
+          setMenuState(false, { returnFocus: true });
+          return;
+        }
+
+        if (event.key !== "Tab") return;
+
+        // Keep keyboard focus inside the open menu: toggle -> menu links -> menu buttons -> toggle.
+        const items = [menuToggle, ...mobileMenu.querySelectorAll("a[href], button:not([disabled])")];
+        const index = items.indexOf(document.activeElement);
+        const last = items.length - 1;
+
+        if (index === -1) {
+          event.preventDefault();
+          items[event.shiftKey ? last : 0].focus();
+        } else if (event.shiftKey && index === 0) {
+          event.preventDefault();
+          items[last].focus();
+        } else if (!event.shiftKey && index === last) {
+          event.preventDefault();
+          items[0].focus();
         }
       });
 
-      const handleScroll = () => {
+      // Growing past the breakpoint hides the toggle, so an open menu could never be closed by tapping.
+      const closeMenuOnDesktop = (event) => {
+        if (event.matches && isMenuOpen()) setMenuState(false);
+      };
+      if (typeof DESKTOP_QUERY.addEventListener === "function") DESKTOP_QUERY.addEventListener("change", closeMenuOnDesktop);
+      else if (typeof DESKTOP_QUERY.addListener === "function") DESKTOP_QUERY.addListener(closeMenuOnDesktop);
+
+      // ---- "You are here": scroll-position highlighting on the homepage ----
+
+      // Page order. #contact has no nav item (Contact opens the contact page), so reaching it highlights nothing.
+      const SECTION_IDS = ["home", "services", "gallery", "why-us", "blog", "contact"];
+      const ACTIVE_LINE_OFFSET = 24;
+
+      const normalisePath = (path) => path.replace(/index\.html$/, "");
+
+      // Accepts "#services", "/#services" or "index.html#services" when they point at this page.
+      const linkSectionId = (link) => {
+        const href = link.getAttribute("href");
+        if (!href || href.indexOf("#") === -1) return null;
+        let url;
+        try {
+          url = new URL(href, window.location.href);
+        } catch (error) {
+          return null;
+        }
+        if (url.origin !== window.location.origin) return null;
+        if (normalisePath(url.pathname) !== normalisePath(window.location.pathname)) return null;
+        return url.hash.slice(1) || null;
+      };
+
+      const trackedLinks = [...document.querySelectorAll(".desktop-nav .nav-link, .mobile-menu-link")]
+        .map((link) => ({ link, id: linkSectionId(link) }))
+        .filter((item) => item.id && item.id !== "contact" && SECTION_IDS.includes(item.id));
+
+      const trackedSections = SECTION_IDS.map((id) => document.getElementById(id))
+        .filter(Boolean)
+        .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+
+      const highlightOnScroll = trackedLinks.length > 0 && Boolean(document.getElementById("home"));
+
+      let activeId;
+      let scrollHighlightLocked = false;
+      let unlockTimer = 0;
+
+      const setActive = (id) => {
+        if (id === activeId) return;
+        activeId = id;
+        trackedLinks.forEach((item) => {
+          const on = item.id === id;
+          item.link.classList.toggle("is-active", on);
+          if (on) item.link.setAttribute("aria-current", "location");
+          else item.link.removeAttribute("aria-current");
+        });
+      };
+
+      // The last section whose top has reached the line just under the sticky header wins.
+      // Nothing reached yet (the very top of the page) means Home. Scroll direction is irrelevant.
+      const computeActiveId = () => {
+        const line = header.offsetHeight + ACTIVE_LINE_OFFSET;
+        let current = "home";
+        trackedSections.forEach((section) => {
+          if (section.getBoundingClientRect().top <= line) current = section.id;
+        });
+        return current;
+      };
+
+      const updateActiveFromScroll = () => {
+        if (!highlightOnScroll || scrollHighlightLocked) return;
+        setActive(computeActiveId());
+      };
+
+      // After a nav click the target is highlighted at once; scroll-driven updates wait until the
+      // smooth scroll finishes so the highlight does not flicker through the sections in between.
+      const releaseScrollHighlight = () => {
+        window.clearTimeout(unlockTimer);
+        window.removeEventListener("scrollend", releaseScrollHighlight);
+        window.removeEventListener("scroll", extendScrollHighlightLock);
+        scrollHighlightLocked = false;
+        updateActiveFromScroll();
+      };
+
+      // Fallback for browsers without `scrollend`: release once scrolling has been quiet briefly.
+      const extendScrollHighlightLock = () => {
+        window.clearTimeout(unlockTimer);
+        unlockTimer = window.setTimeout(releaseScrollHighlight, 180);
+      };
+
+      const lockScrollHighlight = () => {
+        scrollHighlightLocked = true;
+        window.removeEventListener("scrollend", releaseScrollHighlight);
+        window.removeEventListener("scroll", extendScrollHighlightLock);
+        window.addEventListener("scrollend", releaseScrollHighlight);
+        window.addEventListener("scroll", extendScrollHighlightLock, { passive: true });
+        window.clearTimeout(unlockTimer);
+        unlockTimer = window.setTimeout(releaseScrollHighlight, 400);   // covers clicks that need no scrolling
+      };
+
+      // ---- scroll & resize, throttled to one update per animation frame ----
+
+      const onScrollFrame = () => {
         const y = window.scrollY;
         header.classList.toggle("is-scrolled", y > 18);
         if (backToTop) backToTop.classList.toggle("is-visible", y > 620);
+        if (isMenuOpen()) syncMobileMenuTop();
+        updateActiveFromScroll();
       };
 
+      let scrollFrame = 0;
       window.addEventListener("scroll", () => {
-        handleScroll();
-        if (menuToggle.getAttribute("aria-expanded") === "true") syncMobileMenuTop();
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+          scrollFrame = 0;
+          onScrollFrame();
+        });
       }, { passive: true });
-      window.addEventListener("resize", syncMobileMenuTop, { passive: true });
-      handleScroll();
+
+      let resizeFrame = 0;
+      window.addEventListener("resize", () => {
+        if (resizeFrame) return;
+        resizeFrame = window.requestAnimationFrame(() => {
+          resizeFrame = 0;
+          syncMobileMenuTop();
+          updateActiveFromScroll();
+        });
+      }, { passive: true });
+
+      onScrollFrame();
+      window.addEventListener("load", updateActiveFromScroll);
+
+      // The browser's own fragment scroll puts #home under the scroll-padding (y = section top - padding),
+      // which leaves the announcement bar half-hidden. Home always means the true top: on direct loads of
+      // /#home (e.g. the Home link on other pages) and on Back/Forward to a #home entry.
+      const snapHomeToTop = () => {
+        if (highlightOnScroll && window.location.hash === "#home" && window.scrollY !== 0) {
+          window.scrollTo({ top: 0, behavior: "instant" });
+        }
+      };
+
+      // Chrome can re-apply the fragment scroll after `load` while layout settles, so check again
+      // briefly - but never once the visitor has started scrolling or interacting themselves.
+      let visitorInteracted = false;
+      ["wheel", "touchstart", "keydown", "mousedown"].forEach((type) => {
+        window.addEventListener(type, () => { visitorInteracted = true; }, { passive: true, once: true });
+      });
+      const snapHomeAfterLoad = () => {
+        if (!visitorInteracted) snapHomeToTop();
+      };
+      if (highlightOnScroll && window.location.hash === "#home") {
+        // Start immediately (the embed can delay `load` by seconds) and keep undoing re-anchoring,
+        // which arrives as scroll events, until shortly after the page has finished loading.
+        snapHomeAfterLoad();
+        window.addEventListener("scroll", snapHomeAfterLoad, { passive: true });
+        const stopSnapping = () => {
+          snapHomeAfterLoad();
+          window.setTimeout(() => window.removeEventListener("scroll", snapHomeAfterLoad), 1500);
+        };
+        if (document.readyState === "complete") stopSnapping();
+        else window.addEventListener("load", stopSnapping, { once: true });
+      }
+      window.addEventListener("popstate", () => window.requestAnimationFrame(snapHomeToTop));
 
       if (backToTop) backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-      const observedSections = [...document.querySelectorAll("main section[id]")].filter((section) =>
-        ["home", "services", "gallery", "why-us", "contact"].includes(section.id)
-      );
-
-      const sectionObserver = new IntersectionObserver((entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        navLinks.forEach((link) => link.classList.toggle("is-active", link.getAttribute("href") === `#${visible.target.id}`));
-      }, { rootMargin: "-25% 0px -60% 0px", threshold: [0.05, 0.2, 0.5] });
-
-      observedSections.forEach((section) => sectionObserver.observe(section));
+      // ---- in-page links ----
 
       // The skip link is left to the browser, which moves focus to #main-content (tabindex="-1").
       document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach((anchor) => {
         anchor.addEventListener("click", (event) => {
           const selector = anchor.getAttribute("href");
           if (!selector || selector === "#") return;
-          const target = document.querySelector(selector);
+          let target = null;
+          try {
+            target = document.querySelector(selector);
+          } catch (error) {
+            return;
+          }
           if (!target) return;
           event.preventDefault();
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-          if (history.pushState) history.pushState(null, "", selector);
+
+          if (highlightOnScroll && SECTION_IDS.includes(target.id)) {
+            setActive(target.id);
+            lockScrollHighlight();
+          }
+
+          // Only add a history entry when the hash actually changes. Push before scrolling so the
+          // entry being left keeps the exact position the user clicked from.
+          if (window.location.hash !== selector && window.history.pushState) {
+            window.history.pushState(null, "", selector);
+          }
+
+          // Home means the true top of the page, announcement bar included. Both scrolls follow the
+          // CSS scroll-behavior, so reduced-motion users get an instant jump.
+          if (target.id === "home") window.scrollTo({ top: 0 });
+          else target.scrollIntoView({ block: "start" });
         });
       });
 

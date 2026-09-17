@@ -516,17 +516,26 @@
       content: "";
       transform: scaleX(0);
       transform-origin: center;
-      transition: transform var(--transition);
+      transition: transform var(--transition), opacity var(--transition);
     }
 
-    .nav-link:hover,
+    /* Active (current page or section): dark blue text and the full red underline. */
     .nav-link.is-active {
       color: var(--brand-blue-800);
     }
 
-    .nav-link:hover::after,
     .nav-link.is-active::after {
       transform: scaleX(1);
+    }
+
+    /* Hover previews a link without looking selected: a lighter blue and a short, faint underline. */
+    .nav-link:not(.is-active):hover {
+      color: var(--brand-blue-700);
+    }
+
+    .nav-link:not(.is-active):hover::after {
+      opacity: 0.45;
+      transform: scaleX(0.35);
     }
 
     .header-actions {
@@ -670,6 +679,14 @@
     .mobile-menu-link::after {
       color: var(--brand-red);
       content: "→";
+    }
+
+    /* Current page/section in the mobile menu. --brand-red-700 text passes AA on the white panel;
+       the brighter --brand-red is only used for the non-text bar. */
+    .mobile-menu-link.is-active {
+      padding-left: 14px;
+      color: var(--brand-red-700);
+      box-shadow: inset 3px 0 0 var(--brand-red);
     }
 
     .mobile-menu-contact {
