@@ -206,38 +206,6 @@
       onScrollFrame();
       window.addEventListener("load", updateActiveFromScroll);
 
-      // The browser's own fragment scroll puts #home under the scroll-padding (y = section top - padding),
-      // which leaves the announcement bar half-hidden. Home always means the true top: on direct loads of
-      // /#home (e.g. the Home link on other pages) and on Back/Forward to a #home entry.
-      const snapHomeToTop = () => {
-        if (highlightOnScroll && window.location.hash === "#home" && window.scrollY !== 0) {
-          window.scrollTo({ top: 0, behavior: "instant" });
-        }
-      };
-
-      // Chrome can re-apply the fragment scroll after `load` while layout settles, so check again
-      // briefly - but never once the visitor has started scrolling or interacting themselves.
-      let visitorInteracted = false;
-      ["wheel", "touchstart", "keydown", "mousedown"].forEach((type) => {
-        window.addEventListener(type, () => { visitorInteracted = true; }, { passive: true, once: true });
-      });
-      const snapHomeAfterLoad = () => {
-        if (!visitorInteracted) snapHomeToTop();
-      };
-      if (highlightOnScroll && window.location.hash === "#home") {
-        // Start immediately (the embed can delay `load` by seconds) and keep undoing re-anchoring,
-        // which arrives as scroll events, until shortly after the page has finished loading.
-        snapHomeAfterLoad();
-        window.addEventListener("scroll", snapHomeAfterLoad, { passive: true });
-        const stopSnapping = () => {
-          snapHomeAfterLoad();
-          window.setTimeout(() => window.removeEventListener("scroll", snapHomeAfterLoad), 1500);
-        };
-        if (document.readyState === "complete") stopSnapping();
-        else window.addEventListener("load", stopSnapping, { once: true });
-      }
-      window.addEventListener("popstate", () => window.requestAnimationFrame(snapHomeToTop));
-
       if (backToTop) backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
       // ---- in-page links ----
@@ -267,10 +235,10 @@
             window.history.pushState(null, "", selector);
           }
 
-          // Home means the true top of the page, announcement bar included. Both scrolls follow the
-          // CSS scroll-behavior, so reduced-motion users get an instant jump.
-          if (target.id === "home") window.scrollTo({ top: 0 });
-          else target.scrollIntoView({ block: "start" });
+          // Landing position comes from CSS alone (html scroll-padding-top plus the target's
+          // scroll-margin-top), and the scroll follows CSS scroll-behavior, so reduced-motion
+          // users get an instant jump.
+          target.scrollIntoView({ block: "start" });
         });
       });
 
