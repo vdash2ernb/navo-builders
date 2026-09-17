@@ -130,6 +130,11 @@
       transition: transform var(--transition);
     }
 
+    /* main receives focus from the skip link; it is a landmark, not a control */
+    #main-content:focus {
+      outline: none;
+    }
+
     .skip-link:focus {
       transform: translateY(0);
     }

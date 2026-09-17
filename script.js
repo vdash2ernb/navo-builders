@@ -76,7 +76,8 @@
 
       observedSections.forEach((section) => sectionObserver.observe(section));
 
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      // The skip link is left to the browser, which moves focus to #main-content (tabindex="-1").
+      document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach((anchor) => {
         anchor.addEventListener("click", (event) => {
           const selector = anchor.getAttribute("href");
           if (!selector || selector === "#") return;
