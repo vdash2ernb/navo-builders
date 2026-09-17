@@ -743,7 +743,7 @@
       color: var(--white);
       background:
         linear-gradient(90deg, rgba(0, 31, 55, 0.96) 0%, rgba(0, 43, 77, 0.86) 43%, rgba(0, 90, 156, 0.28) 74%, rgba(0, 43, 77, 0.56) 100%),
-        url("https://storage.googleapis.com/msgsndr/aC4T1X7sZ2QsR10nnQuf/media/688a7b99e7e769bb6ffd57d7.jpeg") center center / cover no-repeat;
+        url("/assets/images/poolside-outdoor-living.webp") center center / cover no-repeat;
       overflow: hidden;
       isolation: isolate;
     }
@@ -1279,16 +1279,6 @@
       font-size: 0.8rem;
     }
 
-    .process-panel {
-      margin-top: 52px;
-      padding: 36px;
-      color: var(--white);
-      background:
-        linear-gradient(105deg, rgba(0, 43, 77, 0.96), rgba(0, 58, 102, 0.90)),
-        url("https://storage.googleapis.com/msgsndr/aC4T1X7sZ2QsR10nnQuf/media/688a7b99d4da296ff10d2349.jpeg") center / cover;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-    }
 
     .process-head {
       display: flex;
@@ -1365,7 +1355,7 @@
       color: var(--white);
       background:
         linear-gradient(125deg, rgba(var(--brand-blue-rgb), 0.97), rgba(0, 43, 77, 0.98)),
-        url("https://storage.googleapis.com/msgsndr/aC4T1X7sZ2QsR10nnQuf/media/688a7b99d4da296ff10d2349.jpeg") center / cover;
+        url("/assets/images/paver-patio-fire-feature-turf.webp") center / cover;
     }
 
     .local-service-section .eyebrow,
@@ -1835,7 +1825,7 @@
       color: var(--white);
       background:
         linear-gradient(105deg, rgba(0, 31, 55, 0.97), rgba(0, 58, 102, 0.92)),
-        url("https://storage.googleapis.com/msgsndr/aC4T1X7sZ2QsR10nnQuf/media/688a7b994151953dda7572f5.jpeg") center center / cover no-repeat;
+        url("/assets/images/navo-9b2bedffffa7ca4d.webp") center center / cover no-repeat;
       overflow: hidden;
     }
 
@@ -2462,7 +2452,7 @@
         min-height: auto;
         background:
           linear-gradient(180deg, rgba(0, 31, 55, 0.93) 0%, rgba(0, 43, 77, 0.86) 62%, rgba(0, 43, 77, 0.93) 100%),
-          url("https://storage.googleapis.com/msgsndr/aC4T1X7sZ2QsR10nnQuf/media/688a7b99e7e769bb6ffd57d7.jpeg") center center / cover no-repeat;
+          url("/assets/images/poolside-outdoor-living.webp") center center / cover no-repeat;
       }
 
       .hero-inner {
@@ -2703,11 +2693,6 @@
         padding: 24px;
       }
 
-      .process-panel {
-        margin-top: 50px;
-        padding: 26px 20px;
-        border-radius: 21px;
-      }
 
       .gallery-grid {
         display: grid;
