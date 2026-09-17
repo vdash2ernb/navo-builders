@@ -6,6 +6,8 @@
       --brand-blue-900: #002b4d;
       --brand-red: #ef3e42;
       --brand-red-rgb: 239, 62, 66;
+      /* Darkest brand red that still reads as the brand: white text on it is 4.65:1 (WCAG AA). */
+      --brand-red-600: #dc3036;
       --brand-red-700: #c92a2f;
       --brand-red-200: #f7b9bb;
       --brand-red-100: #fde9ea;
@@ -294,7 +296,8 @@
 
     .btn--primary {
       color: var(--white);
-      background: linear-gradient(135deg, var(--brand-red), var(--brand-red-700));
+      /* Both stops keep white button text at or above 4.5:1; the old --brand-red start was 3.86:1. */
+      background: linear-gradient(135deg, var(--brand-red-600), var(--brand-red-700));
       box-shadow: 0 14px 30px var(--accent-shadow);
     }
 
