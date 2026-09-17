@@ -1761,9 +1761,7 @@
       position: relative;
       padding: 80px 0;
       color: var(--white);
-      background:
-        linear-gradient(105deg, rgba(0, 31, 55, 0.97), rgba(0, 58, 102, 0.92)),
-        url("/assets/images/navo-9b2bedffffa7ca4d.webp") center center / cover no-repeat;
+      background: linear-gradient(105deg, rgba(0, 31, 55, 0.97), rgba(0, 58, 102, 0.92));
       overflow: hidden;
     }
 
