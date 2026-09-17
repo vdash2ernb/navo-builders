@@ -151,12 +151,12 @@
       padding: 80px 0;
     }
 
-    /* The hero opens the page, so Home means the true top, announcement bar included.
-       html's scroll-padding-top would otherwise leave the hero 23px down (its offset from the
-       page top minus the padding). A scroll-margin larger than that makes the browser's own
-       fragment scroll clamp to y=0, at any header or announcement-bar height. */
+    /* The hero opens the page, so Home means the true top, announcement bar included. Left alone,
+       html's scroll-padding-top parks the hero 23px down (its offset from the page top, minus
+       that padding). 200px comfortably exceeds that offset, so the browser's own fragment scroll
+       computes a negative target and clamps it to y=0 - no JS, and true at any header height. */
     #home {
-      scroll-margin-top: 100vh;
+      scroll-margin-top: 200px;
     }
 
     .section--compact {
