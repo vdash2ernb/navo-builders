@@ -125,7 +125,8 @@
           item.addEventListener("click", () => {
             const image = item.querySelector("img");
             lastFocusedGalleryItem = item;
-            lightboxImage.src = image.currentSrc || image.src;
+            // Tiles pick a small srcset candidate; the lightbox always wants the full file.
+            lightboxImage.src = image.dataset.full || image.currentSrc || image.src;
             lightboxImage.alt = image.alt;
             lightboxTitle.textContent = item.dataset.title;
             lightboxLabel.textContent = item.dataset.label;
