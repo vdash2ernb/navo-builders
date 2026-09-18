@@ -2963,68 +2963,6 @@
 
 /* ---- preserved style block ---- */
 
-.navo-inline-viewer {
-    position: fixed;
-    z-index: 2147483000;
-    inset: 0;
-    display: none;
-    background: #ffffff;
-  }
-
-  .navo-inline-viewer.is-open {
-    display: block;
-  }
-
-  .navo-inline-viewer__toolbar {
-    position: absolute;
-    z-index: 3;
-    top: 12px;
-    right: 12px;
-  }
-
-  .navo-inline-viewer__close {
-    min-height: 44px;
-    padding: 11px 17px;
-    color: #ffffff;
-    background: #002b4d;
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    border-radius: 999px;
-    box-shadow: 0 12px 30px rgba(0, 31, 55, 0.28);
-    cursor: pointer;
-    font: 800 0.78rem/1 "Montserrat", Arial, sans-serif;
-  }
-
-  .navo-inline-viewer__close:hover {
-    background: #ef3e42;
-  }
-
-  .navo-inline-viewer__frame {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #ffffff;
-  }
-
-  body.navo-inline-viewer-open {
-    overflow: hidden !important;
-  }
-
-  @media (max-width: 700px) {
-    .navo-inline-viewer__toolbar {
-      top: 8px;
-      right: 8px;
-    }
-
-    .navo-inline-viewer__close {
-      min-height: 40px;
-      padding: 10px 13px;
-      font-size: 0.7rem;
-    }
-  }
-
-/* ---- preserved style block ---- */
-
 /* Removed unnecessary View All Articles action */
   #blog .section-heading,
   #blog .blog-heading,
